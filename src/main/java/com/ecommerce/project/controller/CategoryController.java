@@ -3,6 +3,7 @@ package com.ecommerce.project.controller;
 import com.ecommerce.project.model.Category;
 import com.ecommerce.project.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,17 +20,23 @@ public class CategoryController {
     }
 
     @GetMapping("/public/categories")
-    public List<Category> getAllCategories() {
-        return categoryService.getAllCategories();
+    public ResponseEntity<List<Category>> getAllCategories() {
+        List<Category> categories = categoryService.getAllCategories();
+        return ResponseEntity.ok(categories);
     }
 
     @PostMapping("/public/categories")
-    public String createCategory(@RequestBody Category category) {
-        return categoryService.createCategory(category);
+    public ResponseEntity<String> createCategory(@RequestBody Category category) {
+        String result = categoryService.createCategory(category);
+        return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/public/categories/{categoryId}")
-    public String deleteCategory(@PathVariable Long categoryId) {
-        return categoryService.deleteCategory(categoryId);
+    public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId) {
+        String result = categoryService.deleteCategory(categoryId);
+        if (result.equals("Category not found")) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(result);
     }
 }

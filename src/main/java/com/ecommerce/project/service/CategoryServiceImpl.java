@@ -38,4 +38,18 @@ public class CategoryServiceImpl implements CategoryService {
             return "Category not found";
         }
     }
+
+    @Override
+    public String updateCategory(Category category, Long categoryId) {
+        Optional<Category> existing = categories.stream()
+                .filter(c -> c.getCategoryId().equals(categoryId))
+                .findFirst();
+
+        if (existing.isPresent()) {
+            existing.get().setCategoryName(category.getCategoryName());
+            return "Category updated";
+        } else {
+            throw new RuntimeException("Category with ID " + categoryId + " not found");
+        }
+    }
 }

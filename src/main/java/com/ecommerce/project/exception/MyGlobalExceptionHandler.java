@@ -22,4 +22,9 @@ public class MyGlobalExceptionHandler {
     public ResponseEntity<String> myResponseEntityExceptionHandler(ResourceNotFoundException ex){
         return ResponseEntity.status(404).body(ex.getMessage());
     }
+
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<String> myResponseEntityExceptionHandler(ApiException ex){
+        return ResponseEntity.status(400).body(ex.getMessage());
+    }
 }

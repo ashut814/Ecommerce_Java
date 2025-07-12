@@ -1,13 +1,14 @@
 package com.ecommerce.project.service;
 
+import com.ecommerce.project.exception.ApiException;
 import com.ecommerce.project.model.Category;
 import com.ecommerce.project.repositiories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
+import com.ecommerce.project.exception.ResourceNotFoundException;
 import java.util.Optional;
 
 @Service
@@ -24,14 +25,23 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+        List<Category> categories = categoryRepository.findAll();
+        if(categories.isEmpty()) {
+            throw new ApiException("No categories found");
+        }
+        return categories;
     }
 
     @Override
     public String createCategory(Category category) {
 //        category.setCategoryId(nextId++);
-        categoryRepository.save(category);
-        return "Category added";
+        Category savedCategory = categoryRepository.findByCategoryName(category.getCategoryName());
+        if (savedCategory != null) {
+            throw new ApiException("Category already exists");
+        } else{
+            categoryRepository.save(category);
+            return "Category added";
+        }
     }
 
     @Override
@@ -41,7 +51,7 @@ public class CategoryServiceImpl implements CategoryService {
             categoryRepository.delete(categoryOptional.get());
             return "Category deleted";
         } else {
-            return "Category not found";
+            throw new ResourceNotFoundException("Category", "id", categoryId);
         }
     }
 
@@ -54,7 +64,7 @@ public class CategoryServiceImpl implements CategoryService {
             categoryRepository.save(existingCategory);
             return "Category updated";
         } else {
-            throw new RuntimeException("Category with ID " + categoryId + " not found");
+            throw new ResourceNotFoundException("Category", "id", categoryId);
         }
     }
 }

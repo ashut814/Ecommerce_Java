@@ -17,4 +17,9 @@ public class MyGlobalExceptionHandler {
         ex.getBindingResult().getFieldErrors().forEach(error -> response.put(error.getField(),error.getDefaultMessage()));
         return ResponseEntity.badRequest().body(response);
     }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<String> myResponseEntityExceptionHandler(ResourceNotFoundException ex){
+        return ResponseEntity.status(404).body(ex.getMessage());
+    }
 }

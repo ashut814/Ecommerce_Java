@@ -11,7 +11,7 @@
 	<groupId>com.ecommerce</groupId>
 	<artifactId>sb-ecom</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>sb-ecom</name>
+	<name>sb-ecom</name> 
 	<description>Spring boot ecom project</description>
 	<url/>
 	<licenses>

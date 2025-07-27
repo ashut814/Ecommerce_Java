@@ -11,7 +11,7 @@ public interface CategoryService {
 
 //    List<Category> getAllCategories();
 
-    CategoryResponse getAllCategories();
+    CategoryResponse getAllCategories(int page, int size);
 //    String createCategory(Category category);
 
     CategoryDTO createCategory(CategoryDTO categoryDTO);

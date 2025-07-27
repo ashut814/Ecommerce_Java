@@ -7,6 +7,9 @@ import com.ecommerce.project.payload.CategoryResponse;
 import com.ecommerce.project.repositiories.CategoryRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,9 +32,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryResponse getAllCategories() {
-        List<Category> categories = categoryRepository.findAll();
-        if(categories.isEmpty()) {
+    public CategoryResponse getAllCategories(int page, int size) {
+        Pageable pageDeatails = PageRequest.of(page, size);
+        Page <Category> categoryPage = categoryRepository.findAll(pageDeatails);
+        List<Category> categories = categoryPage.getContent();
+        if (categories.isEmpty()) {
             throw new ApiException("No categories found");
         }
         List<CategoryDTO> categoryDTOs = categories.stream().map(category -> modelMapper.map(category, CategoryDTO.class)).toList();

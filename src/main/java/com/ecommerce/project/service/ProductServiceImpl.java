@@ -121,7 +121,11 @@ public class ProductServiceImpl implements  ProductService {
     public ProductDTO updateProductImage(Long productId, MultipartFile image) throws IOException {
         Product productFromDb = productRepository.findById(productId).orElseThrow(()-> new ResourceNotFoundException("Product","productId",productId));
 
-        String path = "/images/";
+        String path = System.getProperty("user.dir") + "/src/main/resources/static/images/";
+        File dir = new File(path);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
         String fileName = uploadImage(path,image);
 
         productFromDb.setProductImage(fileName);
@@ -131,7 +135,7 @@ public class ProductServiceImpl implements  ProductService {
     }
 
     private String uploadImage(String path, MultipartFile file) throws IOException {
-        String originalFileName = file.getName();
+        String originalFileName = file.getOriginalFilename();
         String randomId = UUID.randomUUID().toString();
 
         String fileName = randomId.concat(originalFileName.substring(originalFileName.lastIndexOf('.')));

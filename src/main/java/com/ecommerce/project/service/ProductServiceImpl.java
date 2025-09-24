@@ -32,15 +32,26 @@ public class ProductServiceImpl implements  ProductService {
     private ModelMapper modelMapper;
     @Autowired FileService fileService;
     @Override
-    public ProductDTO addProduct(Product product, long categoryId) {
+    public ProductDTO addProduct(ProductDTO productDTO, long categoryId) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category","CategoryId",categoryId));
+
+        Product product = modelMapper.map(productDTO, Product.class);
+
+        boolean isProductNotPresent = category.getProducts().stream()
+                .noneMatch(p -> p.getProductName().equals(product.getProductName()));
+
+        if (!isProductNotPresent) {
+            throw new IllegalArgumentException("Product with name already exists in category");
+        }
+
         product.setCategory(category);
-        double specialPrice = product.getDiscountPercentage();
-        double discountAmount = (specialPrice / 100) * product.getProductPrice();
+
+        double discountAmount = (product.getDiscountPercentage() / 100.0) * product.getProductPrice();
         double finalPrice = product.getProductPrice() - discountAmount;
         product.setSpecialPrice(finalPrice);
         product.setProductImage("default image");
+
         Product savedProduct = productRepository.save(product);
         return modelMapper.map(savedProduct, ProductDTO.class);
     }

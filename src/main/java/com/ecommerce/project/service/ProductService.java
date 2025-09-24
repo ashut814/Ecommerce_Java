@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 public interface ProductService {
-    ProductDTO addProduct(Product product, long categoryId);
+    ProductDTO addProduct(ProductDTO productDTO, long categoryId);
 
     ProductResponse getAllProducts();
 
